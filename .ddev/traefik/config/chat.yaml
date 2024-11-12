@@ -1,0 +1,77 @@
+#ddev-generated
+# If you remove the ddev-generated line above you
+# are responsible for maintaining this file. DDEV will not then
+# update it, for example if you add `additional_hostnames`, etc.
+
+http:
+  routers:
+    chat-web-80-http:
+      entrypoints:
+        - http-80
+      rule: HostRegexp(`^chat\.ddev\.site$`)
+      
+      service: "chat-web-80"
+      ruleSyntax: v3
+      tls: false
+      # middlewares:
+      #   - "chat-redirectHttps"
+    chat-web-8025-http:
+      entrypoints:
+        - http-8025
+      rule: HostRegexp(`^chat\.ddev\.site$`)
+      
+      service: "chat-web-8025"
+      ruleSyntax: v3
+      tls: false
+      # middlewares:
+      #   - "chat-redirectHttps"
+    
+    
+    
+    chat-web-80-https:
+      entrypoints:
+        - http-443
+      rule: HostRegexp(`^chat\.ddev\.site$`)
+      
+      service: "chat-web-80"
+      ruleSyntax: v3
+      
+      tls: true
+      
+    chat-web-8025-https:
+      entrypoints:
+        - http-8026
+      rule: HostRegexp(`^chat\.ddev\.site$`)
+      
+      service: "chat-web-8025"
+      ruleSyntax: v3
+      
+      tls: true
+      
+    
+
+  middlewares:
+    chat-redirectHttps:
+      redirectScheme:
+        scheme: https
+        permanent: true
+
+  services:
+    chat-web-80:
+      loadbalancer:
+        servers:
+          - url: http://ddev-chat-web:80
+        
+    chat-web-8025:
+      loadbalancer:
+        servers:
+          - url: http://ddev-chat-web:8025
+        
+    
+    
+    
+
+tls:
+  certificates:
+    - certFile: /mnt/ddev-global-cache/traefik/certs/chat.crt
+      keyFile: /mnt/ddev-global-cache/traefik/certs/chat.key
